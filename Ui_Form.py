@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'window.ui'
+## Form generated from reading UI file 'form.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.1
 ##
@@ -88,6 +88,7 @@ class Ui_Form(object):
         self.btn_label_A.setObjectName(u"btn_label_A")
         self.btn_label_A.setStyleSheet(u"QPushButton:pressed {\n"
 "	background-color : rgb(62, 62, 62);\n"
+"	background-color: rgb(255, 85, 0);\n"
 "	color: rgb(255, 255, 255);\n"
 "}\n"
 "\n"
@@ -164,12 +165,12 @@ class Ui_Form(object):
 
         self.gridLayout_2.addWidget(self.btn_output_file, 1, 3, 1, 1)
 
-        self.lineEdit = QLineEdit(Form)
-        self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setEnabled(False)
-        self.lineEdit.setReadOnly(True)
+        self.lbl_image_folder = QLineEdit(Form)
+        self.lbl_image_folder.setObjectName(u"lbl_image_folder")
+        self.lbl_image_folder.setEnabled(False)
+        self.lbl_image_folder.setReadOnly(True)
 
-        self.gridLayout_2.addWidget(self.lineEdit, 0, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.lbl_image_folder, 0, 1, 1, 1)
 
 
         self.verticalLayout.addLayout(self.gridLayout_2)
@@ -227,10 +228,10 @@ class Ui_Form(object):
         self.label_7.setText(QCoreApplication.translate("Form", u"D", None))
         self.label_5.setText(QCoreApplication.translate("Form", u"A", None))
         self.label_6.setText(QCoreApplication.translate("Form", u"S", None))
-        self.btn_label_A.setText(QCoreApplication.translate("Form", u"Staff", None))
-        self.btn_label_S.setText(QCoreApplication.translate("Form", u"Customer", None))
-        self.btn_edit_classS.setText(QCoreApplication.translate("Form", u"Edit class", None))
-        self.btn_edit_classA.setText(QCoreApplication.translate("Form", u"Edit class", None))
+        self.btn_label_A.setText(QCoreApplication.translate("Form", u"Customer", None))
+        self.btn_label_S.setText(QCoreApplication.translate("Form", u"Staff", None))
+        self.btn_edit_classS.setText(QCoreApplication.translate("Form", u"Edit class name", None))
+        self.btn_edit_classA.setText(QCoreApplication.translate("Form", u"Edit class name", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"Image Folder", None))
         self.btn_img_folder.setText(QCoreApplication.translate("Form", u"...", None))
         self.label_4.setText(QCoreApplication.translate("Form", u"Output File", None))

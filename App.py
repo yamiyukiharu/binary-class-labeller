@@ -70,10 +70,14 @@ class Form(QWidget, Ui_Form):
     def set_output_file(self):
         fn, _ = QFileDialog.getOpenFileName(self, 'Open labels', "", "CSV (*.csv)")
         if fn != '':
-            self.output_file = fn
-            df = pd.read_csv(fn, index_col='File path')
-            self.img_labels = df.to_dict('index')
-            self.lbl_output_file.setText(fn)
+            self.read_output_file(fn)
+
+    def read_output_file(self, file_path):
+        df = pd.read_csv(file_path, index_col='File path')
+        self.output_file = file_path
+        self.img_labels = df.to_dict('index')
+        self.img_labels = {key: column_label_dict['0'] for key, column_label_dict in self.img_labels.items()}
+        self.lbl_output_file.setText(file_path)
 
     def open_img_folder(self):
         folder = QFileDialog.getExistingDirectory()
@@ -86,10 +90,19 @@ class Form(QWidget, Ui_Form):
             self.img_list = [img_path.split(os.sep)[-1] for img_path in self.img_path_list]
             self.display_img(0)
             self.current_index = 0
+
+            try:
+                label_file = os.path.join(folder, 'labels.csv')
+                self.read_output_file(label_file)
+            except:
+                pass
+
             self.populate_table()
+            self.lbl_image_folder.setText(folder)
 
     def populate_table(self):
         self.tbl_browser.clear()
+        self.tbl_browser.setHorizontalHeaderLabels(['Image', 'Label'])
         self.tbl_browser.setRowCount(len(self.img_list))
         for i, img_name in enumerate(self.img_list):
             label = self.img_labels.get(img_name)
@@ -98,7 +111,7 @@ class Form(QWidget, Ui_Form):
             path_item = QTableWidgetItem()
             label_item = QTableWidgetItem()
             path_item.setText(img_name)
-            label_item.setText(label)
+            label_item.setText(str(label))
             self.tbl_browser.setItem(i,0,path_item)
             self.tbl_browser.setItem(i,1,label_item)
     
