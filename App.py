@@ -15,8 +15,8 @@ class Form(QWidget, Ui_Form):
         self.label_count: int = 0
         self.img_folder: str = ''
         self.output_file: str = ''
-        self.img_path_list: List[str] = []
         self.img_list: List[str] = []
+        self.active_img_list: List[str] = []
         self.current_index: int = 0
         self.img_labels: Dict[str, int] = {}
 
@@ -48,6 +48,7 @@ class Form(QWidget, Ui_Form):
         self.btn_label_D.clicked.connect(self.label_btn_clicked)
         self.btn_edit_classA.clicked.connect(self.set_class_nameA)
         self.btn_edit_classS.clicked.connect(self.set_class_nameS)
+        self.cmb_browser_filter.currentIndexChanged.connect(self.populate_table)
 
     def setupKeyboardShortcuts(self):
         self.shortcut_save = QShortcut(QKeySequence('Ctrl+S'), self)
@@ -83,13 +84,13 @@ class Form(QWidget, Ui_Form):
         folder = QFileDialog.getExistingDirectory()
         if folder != '' :
             self.img_folder = folder   
-            self.img_path_list = sorted(
+            img_path_list = sorted(
                 glob.glob(os.path.join(folder, "*.png")),
                 key=lambda x: int(x[:-4].split("-")[-1]),
             )
-            self.img_list = [img_path.split(os.sep)[-1] for img_path in self.img_path_list]
+            self.img_list = [img_path.split(os.sep)[-1] for img_path in img_path_list]
+            self.active_img_list = self.img_list
             self.display_img(0)
-            self.current_index = 0
 
             try:
                 label_file = os.path.join(folder, 'labels.csv')
@@ -97,14 +98,23 @@ class Form(QWidget, Ui_Form):
             except:
                 pass
 
-            self.populate_table()
+            self.populate_table(3)
             self.lbl_image_folder.setText(folder)
 
-    def populate_table(self):
+    def populate_table(self, filter:int =3):
         self.tbl_browser.clear()
         self.tbl_browser.setHorizontalHeaderLabels(['Image', 'Label'])
-        self.tbl_browser.setRowCount(len(self.img_list))
-        for i, img_name in enumerate(self.img_list):
+        self.current_index = 0
+
+        if filter == 3:
+            self.active_img_list = self.img_list
+        elif filter == 4:
+            self.active_img_list = [img_name for img_name in self.img_list if self.img_labels.get(img_name) == None]
+        else:
+            self.active_img_list = [img_name for img_name in self.img_list if self.img_labels.get(img_name) == filter]
+
+        self.tbl_browser.setRowCount(len( self.active_img_list))
+        for i, img_name in enumerate( self.active_img_list):
             label = self.img_labels.get(img_name)
             if label is None:
                 label = ''
@@ -121,17 +131,18 @@ class Form(QWidget, Ui_Form):
         self.setFocus()
 
     def display_img(self, index):
-        frame = cv2.imread(self.img_path_list[index])
+        img_path = os.path.join(self.img_folder, self.active_img_list[index])
+        frame = cv2.imread(img_path)
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         h,w,ch = frame.shape
         qimage = QImage(frame.data, w, h, ch*w, QImage.Format_RGB888)
         img = QPixmap.fromImage(qimage)
         img = img.scaled(self.lbl_img.size(), Qt.KeepAspectRatio)
         self.lbl_img.setPixmap(img)
-        self.lbl_img_name.setText(f'img-{index}')
+        self.lbl_img_name.setText(self.active_img_list[index])
 
         # highlight button if labeled
-        label = self.img_labels.get(self.img_list[index])
+        label = self.img_labels.get(self.active_img_list[index])
         for lbl, btn in self.label_widget_mapping.items():
             if label == int(lbl):
                 btn.setCheckable(True)
@@ -141,7 +152,7 @@ class Form(QWidget, Ui_Form):
                 btn.setCheckable(False)
 
         # highlight row in table
-        self.tbl_browser.selectRow(self.current_index)
+        self.tbl_browser.selectRow(index)
 
     def save_labels(self):
         df = pd.DataFrame.from_dict(self.img_labels, orient='index')
@@ -168,11 +179,11 @@ class Form(QWidget, Ui_Form):
         
     def label_img(self, label):
         if len(self.img_list) > 0:
-            self.img_labels[self.img_list[self.current_index]] = label
+            self.img_labels[self.active_img_list[self.current_index]] = label
             
             # update table
             label_item = self.tbl_browser.item(self.current_index, 1)
-            label_item.setText(str(self.img_labels[self.img_list[self.current_index]]))
+            label_item.setText(str(self.img_labels[self.active_img_list[self.current_index]]))
             self.next_img()
 
             # perform autosave
@@ -190,7 +201,7 @@ class Form(QWidget, Ui_Form):
         self.update_img()
 
     def update_img(self):
-        self.current_index = self.current_index % len(self.img_list)
+        self.current_index = self.current_index % len(self.active_img_list)
         self.display_img(self.current_index)
 
 if __name__ == '__main__':

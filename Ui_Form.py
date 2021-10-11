@@ -182,6 +182,21 @@ class Ui_Form(object):
         self.groupBox_2.setObjectName(u"groupBox_2")
         self.verticalLayout_3 = QVBoxLayout(self.groupBox_2)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.label = QLabel(self.groupBox_2)
+        self.label.setObjectName(u"label")
+
+        self.verticalLayout_3.addWidget(self.label)
+
+        self.cmb_browser_filter = QComboBox(self.groupBox_2)
+        self.cmb_browser_filter.addItem("")
+        self.cmb_browser_filter.addItem("")
+        self.cmb_browser_filter.addItem("")
+        self.cmb_browser_filter.addItem("")
+        self.cmb_browser_filter.addItem("")
+        self.cmb_browser_filter.setObjectName(u"cmb_browser_filter")
+
+        self.verticalLayout_3.addWidget(self.cmb_browser_filter)
+
         self.tbl_browser = QTableWidget(self.groupBox_2)
         if (self.tbl_browser.columnCount() < 2):
             self.tbl_browser.setColumnCount(2)
@@ -213,6 +228,7 @@ class Ui_Form(object):
         self.btn_label_D.setDefault(False)
         self.btn_label_A.setDefault(False)
         self.btn_label_S.setDefault(False)
+        self.cmb_browser_filter.setCurrentIndex(3)
 
 
         QMetaObject.connectSlotsByName(Form)
@@ -237,6 +253,13 @@ class Ui_Form(object):
         self.label_4.setText(QCoreApplication.translate("Form", u"Output File", None))
         self.btn_output_file.setText(QCoreApplication.translate("Form", u"Load", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("Form", u"Labels", None))
+        self.label.setText(QCoreApplication.translate("Form", u"Filter by:", None))
+        self.cmb_browser_filter.setItemText(0, QCoreApplication.translate("Form", u"Customer", None))
+        self.cmb_browser_filter.setItemText(1, QCoreApplication.translate("Form", u"Staff", None))
+        self.cmb_browser_filter.setItemText(2, QCoreApplication.translate("Form", u"N/A", None))
+        self.cmb_browser_filter.setItemText(3, QCoreApplication.translate("Form", u"All", None))
+        self.cmb_browser_filter.setItemText(4, QCoreApplication.translate("Form", u"None", None))
+
         ___qtablewidgetitem = self.tbl_browser.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("Form", u"Image", None));
         ___qtablewidgetitem1 = self.tbl_browser.horizontalHeaderItem(1)
